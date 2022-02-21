@@ -37,6 +37,19 @@
                                     <div class="alert alert-danger mt-3">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                <div class="form-group ">
+                                    <p>Tags</p>
+
+                                    @foreach ($tags as $tag)
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="tags[]" id="{{$tag->slug}}" value="{{$tag->id}}">
+                                            <label class="form-check-label" for="{{$tag->slug}}">{{$tag->name}}</label>
+                                        </div>
+                                            
+                                    @endforeach
+
+                                </div>
                                 <div class="form-check mb-3">
                                     <input class="form-check-input @error('published') is-invalid @enderror" type="checkbox" name="published" id="published" {{old('published') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="published">Pubblicato</label>

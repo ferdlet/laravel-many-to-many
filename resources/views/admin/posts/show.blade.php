@@ -16,6 +16,14 @@
                                 Categoria: {{$post->category->name}}
                             </div>
                         @endif 
+                        @if (count($post->tags) > 0)
+                            <div class="mb-3">
+                                Tags: 
+                                @foreach ($post->tags as $tag)
+                                    <span class="badge badge-primary">{{$tag->name}}</span>
+                                @endforeach
+                            </div>
+                        @endif 
                         {{$post->content}}
                         <div class="d-flex gap-5 mt-3">
                             <a class="mr-3" href="{{route("posts.edit", $post->id)}}"><button type="button" class="btn btn-warning">Modifica</button></a>
