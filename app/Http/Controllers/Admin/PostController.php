@@ -55,23 +55,10 @@ class PostController extends Controller
         $data = $request->all();
 
         $newPost = new Post();
-        $newPost->title = $data["title"];
-        $newPost->content = $data["content"];
-        $newPost->category_id = $data['category_id'];
-
-        if (isset($data['published'])) {
-            $newPost->published = true;
-        }
+        $newPost->fill($data);
+        $newPost->published = isset($data['published']);
         
-        $slug = Str::of($newPost->title)->slug("-");
-        $count = 1;
-        
-        while(Post::where("slug", $slug)->first() ) {
-            $slug = Str::of($newPost->title)->slug("-")."-{$count}";
-            $count++;
-            
-        }
-        $newPost->slug = $slug;
+        $newPost->slug = $this->getSlug($newPost->title);
 
         $newPost->save();
 
@@ -121,17 +108,10 @@ class PostController extends Controller
             $post->title = $data['title'];
             $slug = Str::of($post->title)->slug("-");
             if ($slug != $post->slug) {
-                $count = 1;
-                while (Post::where("slug", $slug)->first() ) {
-                    $slug = Str::of($post->title)->slug("-") . "-{$count}";
-                    $count++;
-                }
-                $post->slug = $slug;
+                $post->slug = $this->getSlug($post->title);
             }
         }
-
-        $post->content = $data["content"];
-        $post->category_id = $data['category_id'];
+        $post->fill($data);
         $post->published = isset($data["published"]);
 
         $post->save();
@@ -150,5 +130,22 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()->route("posts.index");
+    }
+    
+    /**
+     * getSlug
+     *
+     * @param  mixed $title
+     * @return void
+     */
+    private function getSlug($title) 
+    {
+        $slug = Str::of($title)->slug("-");
+        $count = 1;
+        while (Post::where("slug", $slug)->first()) {
+            $slug = Str::of($title)->slug("-") . "-{$count}";
+            $count++;
+        }
+        return $slug;
     }
 }
